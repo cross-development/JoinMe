@@ -5,6 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddCors();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -13,6 +14,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseCors(options =>
+{
+    options.AllowAnyHeader()
+        .AllowAnyMethod()
+        .WithOrigins("http://localhost:3000", "https://localhost:3000");
+});
 app.MapControllers();
 
 await MigrateDatabaseAsync(app);
