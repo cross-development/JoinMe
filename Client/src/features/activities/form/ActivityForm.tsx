@@ -2,17 +2,20 @@ import { FC, FormEvent, memo, useCallback } from 'react';
 
 import { Paper, Box, Typography, TextField, Button } from '@mui/material';
 
+import { useActivities } from '../../../lib/hooks/useActivities';
+
 type ActivityFormProps = {
-  activity?: Activity;
+  selectedActivity?: Activity;
   onCloseForm: () => void;
-  onSubmitForm: (activity: Activity) => void;
 };
 
 const ActivityForm: FC<ActivityFormProps> = memo(props => {
-  const { activity, onCloseForm, onSubmitForm } = props;
+  const { selectedActivity, onCloseForm } = props;
+
+  const { updateActivity, createActivity } = useActivities();
 
   const handleSubmit = useCallback(
-    (event: FormEvent<HTMLFormElement>): void => {
+    async (event: FormEvent<HTMLFormElement>) => {
       event.preventDefault();
 
       const formData = new FormData(event.currentTarget);
@@ -23,13 +26,17 @@ const ActivityForm: FC<ActivityFormProps> = memo(props => {
         data[key] = value;
       });
 
-      if (activity) {
-        data.id = activity.id;
+      if (selectedActivity) {
+        data.id = selectedActivity.id;
+
+        await updateActivity.mutateAsync(data as unknown as Activity);
+      } else {
+        await createActivity.mutateAsync(data as unknown as Activity);
       }
 
-      onSubmitForm(data as unknown as Activity);
+      onCloseForm();
     },
-    [activity, onSubmitForm],
+    [selectedActivity, updateActivity, createActivity, onCloseForm],
   );
 
   return (
@@ -39,32 +46,46 @@ const ActivityForm: FC<ActivityFormProps> = memo(props => {
       </Typography>
 
       <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        <TextField name="title" label="Title" defaultValue={activity?.title} />
+        <TextField name="title" label="Title" defaultValue={selectedActivity?.title} />
 
         <TextField
           multiline
           name="description"
           label="Description"
           rows={3}
-          defaultValue={activity?.description}
+          defaultValue={selectedActivity?.description}
         />
 
-        <TextField name="category" label="Category" defaultValue={activity?.category} />
+        <TextField name="category" label="Category" defaultValue={selectedActivity?.category} />
 
-        <TextField name="date" label="Date" type="date" defaultValue={activity?.date} />
+        <TextField
+          name="date"
+          label="Date"
+          type="date"
+          defaultValue={
+            selectedActivity?.date
+              ? new Date(selectedActivity.date).toISOString().split('T')[0]
+              : new Date().toISOString().split('T')[0]
+          }
+        />
 
-        <TextField name="country" label="Country" defaultValue={activity?.country} />
+        <TextField name="country" label="Country" defaultValue={selectedActivity?.country} />
 
-        <TextField name="city" label="City" defaultValue={activity?.city} />
+        <TextField name="city" label="City" defaultValue={selectedActivity?.city} />
 
-        <TextField name="venue" label="Venue" defaultValue={activity?.venue} />
+        <TextField name="venue" label="Venue" defaultValue={selectedActivity?.venue} />
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3 }}>
           <Button color="inherit" onClick={onCloseForm}>
             Cancel
           </Button>
 
-          <Button type="submit" color="success" variant="contained">
+          <Button
+            type="submit"
+            color="success"
+            variant="contained"
+            disabled={updateActivity.isPending || createActivity.isPending}
+          >
             Submit
           </Button>
         </Box>

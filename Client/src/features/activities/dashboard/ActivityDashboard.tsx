@@ -11,11 +11,9 @@ type ActivityDashboardProps = {
   activities: Array<Activity>;
   selectedActivity?: Activity;
   onSelectActivity: (id: string) => void;
-  onDeleteActivity: (id: string) => void;
   onCancelSelectActivity: () => void;
   onOpenForm: (id: string) => void;
   onCloseForm: () => void;
-  onSubmitForm: (activity: Activity) => void;
 };
 
 const ActivityDashboard: FC<ActivityDashboardProps> = memo(props => {
@@ -25,34 +23,26 @@ const ActivityDashboard: FC<ActivityDashboardProps> = memo(props => {
     selectedActivity,
     onOpenForm,
     onCloseForm,
-    onSubmitForm,
     onSelectActivity,
-    onDeleteActivity,
     onCancelSelectActivity,
   } = props;
 
   return (
     <Grid2 container spacing={3}>
       <Grid2 size={7}>
-        <ActivityList
-          activities={activities}
-          onSelectActivity={onSelectActivity}
-          onDeleteActivity={onDeleteActivity}
-        />
+        <ActivityList activities={activities} onSelectActivity={onSelectActivity} />
       </Grid2>
 
       <Grid2 size={5}>
         {selectedActivity && !editMode && (
           <ActivityDetails
-            activity={selectedActivity}
+            selectedActivity={selectedActivity}
             onOpenForm={onOpenForm}
             onCancelSelectActivity={onCancelSelectActivity}
           />
         )}
 
-        {editMode && (
-          <ActivityForm activity={selectedActivity} onCloseForm={onCloseForm} onSubmitForm={onSubmitForm} />
-        )}
+        {editMode && <ActivityForm selectedActivity={selectedActivity} onCloseForm={onCloseForm} />}
       </Grid2>
     </Grid2>
   );

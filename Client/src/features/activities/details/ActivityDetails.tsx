@@ -1,15 +1,28 @@
-import { FC, memo } from 'react';
+import { FC, memo, useMemo } from 'react';
 
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 
+import { useActivities } from '../../../lib/hooks/useActivities';
+
 type ActivityDetailsProps = {
-  activity: Activity;
+  selectedActivity: Activity;
   onOpenForm: (id: string) => void;
   onCancelSelectActivity: () => void;
 };
 
 const ActivityDetails: FC<ActivityDetailsProps> = memo(props => {
-  const { activity, onOpenForm, onCancelSelectActivity } = props;
+  const { selectedActivity, onOpenForm, onCancelSelectActivity } = props;
+
+  const { activities } = useActivities();
+
+  const activity = useMemo(
+    () => activities?.find(activity => activity.id === selectedActivity.id),
+    [activities, selectedActivity.id],
+  );
+
+  if (!activity) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <Card sx={{ borderRadius: 3 }}>

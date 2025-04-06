@@ -1,25 +1,19 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { Box, Container, CssBaseline } from '@mui/material';
+import { Box, Container, CssBaseline, Typography } from '@mui/material';
 
 import NavBar from './NavBar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
-
-import axios from 'axios';
+import { useActivities } from '../../lib/hooks/useActivities';
 
 const App = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [activities, setActivities] = useState<Activity[]>([]);
   const [selectedActivity, setSelectedActivity] = useState<Activity>();
 
-  useEffect(() => {
-    axios
-      .get<Activity[]>('https://localhost:5001/api/activities')
-      .then(response => setActivities(response.data));
-  }, []);
+  const { activities, isPending } = useActivities();
 
   const handleSelectActivity = useCallback(
-    (id: string) => setSelectedActivity(activities.find(activity => activity.id === id)),
+    (id: string) => setSelectedActivity(activities?.find(activity => activity.id === id)),
     [activities],
   );
 
@@ -40,41 +34,26 @@ const App = () => {
 
   const handleFormClose = useCallback(() => setEditMode(false), []);
 
-  const handleDeleteActivity = useCallback((id: string) => {
-    setActivities(prevState => prevState.filter(activity => activity.id !== id));
-  }, []);
-
-  const handleSubmitForm = useCallback((activity: Activity) => {
-    if (activity.id) {
-      setActivities(prevState => prevState.map(a => (a.id === activity.id ? activity : a)));
-    } else {
-      const newActivity = { ...activity, id: (Math.random() + 1).toString(36).substring(7) };
-
-      setSelectedActivity(newActivity);
-      setActivities(prevState => [...prevState, newActivity]);
-    }
-
-    setEditMode(false);
-  }, []);
-
   return (
-    <Box sx={{ bgcolor: '#eeeeee' }}>
+    <Box sx={{ bgcolor: '#eeeeee', minHeight: '100vh' }}>
       <CssBaseline />
 
       <NavBar onOpenForm={handleOpenForm} />
 
       <Container maxWidth="xl" sx={{ mt: 3 }}>
-        <ActivityDashboard
-          editMode={editMode}
-          activities={activities}
-          selectedActivity={selectedActivity}
-          onOpenForm={handleOpenForm}
-          onCloseForm={handleFormClose}
-          onSubmitForm={handleSubmitForm}
-          onDeleteActivity={handleDeleteActivity}
-          onSelectActivity={handleSelectActivity}
-          onCancelSelectActivity={handleCancelSelectActivity}
-        />
+        {!activities || isPending ? (
+          <Typography>Loading...</Typography>
+        ) : (
+          <ActivityDashboard
+            editMode={editMode}
+            activities={activities}
+            selectedActivity={selectedActivity}
+            onOpenForm={handleOpenForm}
+            onCloseForm={handleFormClose}
+            onSelectActivity={handleSelectActivity}
+            onCancelSelectActivity={handleCancelSelectActivity}
+          />
+        )}
       </Container>
     </Box>
   );

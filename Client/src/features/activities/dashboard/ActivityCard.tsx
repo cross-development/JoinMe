@@ -2,14 +2,17 @@ import { memo, FC } from 'react';
 
 import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from '@mui/material';
 
+import { useActivities } from '../../../lib/hooks/useActivities';
+
 type ActivityCardProps = {
   activity: Activity;
   onSelectActivity: (id: string) => void;
-  onDeleteActivity: (id: string) => void;
 };
 
 const ActivityCard: FC<ActivityCardProps> = memo(props => {
-  const { activity, onSelectActivity, onDeleteActivity } = props;
+  const { activity, onSelectActivity } = props;
+
+  const { deleteActivity } = useActivities();
 
   return (
     <Card sx={{ borderRadius: 3 }}>
@@ -33,7 +36,13 @@ const ActivityCard: FC<ActivityCardProps> = memo(props => {
             View
           </Button>
 
-          <Button size="medium" variant="contained" onClick={() => onDeleteActivity(activity.id)}>
+          <Button
+            size="medium"
+            color="error"
+            variant="contained"
+            disabled={deleteActivity.isPending}
+            onClick={() => deleteActivity.mutate(activity.id)}
+          >
             Delete
           </Button>
         </Box>
