@@ -1,27 +1,21 @@
-import { FC, memo, useMemo } from 'react';
+import { FC } from 'react';
 
+import { Link, useParams } from 'react-router';
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from '@mui/material';
 
 import { useActivities } from '../../../lib/hooks/useActivities';
 
-type ActivityDetailsProps = {
-  selectedActivity: Activity;
-  onOpenForm: (id: string) => void;
-  onCancelSelectActivity: () => void;
-};
+const ActivityDetails: FC = () => {
+  const { id } = useParams<{ id: string }>();
 
-const ActivityDetails: FC<ActivityDetailsProps> = memo(props => {
-  const { selectedActivity, onOpenForm, onCancelSelectActivity } = props;
+  const { activity, isLoadingActivity } = useActivities({ id });
 
-  const { activities } = useActivities();
-
-  const activity = useMemo(
-    () => activities?.find(activity => activity.id === selectedActivity.id),
-    [activities, selectedActivity.id],
-  );
+  if (isLoadingActivity) {
+    return <Typography>Loading...</Typography>;
+  }
 
   if (!activity) {
-    return <Typography>Loading...</Typography>;
+    return <Typography>Not found</Typography>;
   }
 
   return (
@@ -39,17 +33,17 @@ const ActivityDetails: FC<ActivityDetailsProps> = memo(props => {
       </CardContent>
 
       <CardActions>
-        <Button color="primary" onClick={() => onOpenForm(activity.id)}>
+        <Button color="primary" href={`/activities/${activity.id}/edit`} LinkComponent={Link}>
           Edit
         </Button>
 
-        <Button color="inherit" onClick={onCancelSelectActivity}>
+        <Button color="inherit" href="/activities" LinkComponent={Link}>
           Cancel
         </Button>
       </CardActions>
     </Card>
   );
-});
+};
 
 ActivityDetails.displayName = 'ActivityDetails';
 

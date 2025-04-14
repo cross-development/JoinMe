@@ -1,18 +1,16 @@
-import { FC, FormEvent, memo, useCallback } from 'react';
+import { FC, FormEvent, useCallback } from 'react';
 
+import { Link, useNavigate, useParams } from 'react-router';
 import { Paper, Box, Typography, TextField, Button } from '@mui/material';
 
 import { useActivities } from '../../../lib/hooks/useActivities';
 
-type ActivityFormProps = {
-  selectedActivity?: Activity;
-  onCloseForm: () => void;
-};
+const ActivityForm: FC = () => {
+  const { id } = useParams<{ id?: string }>();
 
-const ActivityForm: FC<ActivityFormProps> = memo(props => {
-  const { selectedActivity, onCloseForm } = props;
+  const navigate = useNavigate();
 
-  const { updateActivity, createActivity } = useActivities();
+  const { updateActivity, createActivity, activity, isLoadingActivity } = useActivities({ id });
 
   const handleSubmit = useCallback(
     async (event: FormEvent<HTMLFormElement>) => {
@@ -26,57 +24,63 @@ const ActivityForm: FC<ActivityFormProps> = memo(props => {
         data[key] = value;
       });
 
-      if (selectedActivity) {
-        data.id = selectedActivity.id;
+      if (activity) {
+        data.id = activity.id;
 
-        await updateActivity.mutateAsync(data as unknown as Activity);
+        await updateActivity.mutateAsync(data as unknown as Activity, {
+          onSuccess: () => navigate(`/activities/${activity.id}`),
+        });
       } else {
-        await createActivity.mutateAsync(data as unknown as Activity);
+        await createActivity.mutateAsync(data as unknown as Activity, {
+          onSuccess: id => navigate(`/activities/${id}`),
+        });
       }
-
-      onCloseForm();
     },
-    [selectedActivity, updateActivity, createActivity, onCloseForm],
+    [activity, updateActivity, createActivity, navigate],
   );
+
+  if (isLoadingActivity) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <Paper sx={{ borderRadius: 3, padding: 3 }}>
       <Typography gutterBottom variant="h5" color="primary">
-        Create activity
+        {activity ? 'Create activity' : 'Edit activity'}
       </Typography>
 
       <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        <TextField name="title" label="Title" defaultValue={selectedActivity?.title} />
+        <TextField name="title" label="Title" defaultValue={activity?.title} />
 
         <TextField
           multiline
           name="description"
           label="Description"
           rows={3}
-          defaultValue={selectedActivity?.description}
+          defaultValue={activity?.description}
         />
 
-        <TextField name="category" label="Category" defaultValue={selectedActivity?.category} />
+        <TextField name="category" label="Category" defaultValue={activity?.category} />
 
         <TextField
           name="date"
           label="Date"
           type="date"
           defaultValue={
-            selectedActivity?.date
-              ? new Date(selectedActivity.date).toISOString().split('T')[0]
+            activity?.date
+              ? new Date(activity.date).toISOString().split('T')[0]
               : new Date().toISOString().split('T')[0]
           }
         />
 
-        <TextField name="country" label="Country" defaultValue={selectedActivity?.country} />
+        <TextField name="country" label="Country" defaultValue={activity?.country} />
 
-        <TextField name="city" label="City" defaultValue={selectedActivity?.city} />
+        <TextField name="city" label="City" defaultValue={activity?.city} />
 
-        <TextField name="venue" label="Venue" defaultValue={selectedActivity?.venue} />
+        <TextField name="venue" label="Venue" defaultValue={activity?.venue} />
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3 }}>
-          <Button color="inherit" onClick={onCloseForm}>
+          <Button color="inherit" href="/activities" LinkComponent={Link}>
             Cancel
           </Button>
 
@@ -92,7 +96,7 @@ const ActivityForm: FC<ActivityFormProps> = memo(props => {
       </Box>
     </Paper>
   );
-});
+};
 
 ActivityForm.displayName = 'ActivityForm';
 

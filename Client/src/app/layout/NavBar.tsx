@@ -1,15 +1,12 @@
 import { FC, memo } from 'react';
 
+import { NavLink } from 'react-router';
 import { Group } from '@mui/icons-material';
-import { AppBar, Box, Button, Container, MenuItem, Toolbar, Typography } from '@mui/material';
+import { AppBar, Box, Container, MenuItem, Toolbar, Typography } from '@mui/material';
 
-type NavBarProps = {
-  onOpenForm: () => void;
-};
+import MenuItemLink from '../shared/components/MenuItemLink';
 
-const NavBar: FC<NavBarProps> = memo(props => {
-  const { onOpenForm } = props;
-
+const NavBar: FC = memo(() => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar
@@ -19,7 +16,7 @@ const NavBar: FC<NavBarProps> = memo(props => {
         <Container maxWidth="xl">
           <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box>
-              <MenuItem sx={{ display: 'flex', gap: 2 }}>
+              <MenuItem disableRipple href="/" LinkComponent={NavLink} sx={{ display: 'flex', gap: 2 }}>
                 <Group fontSize="large" />
 
                 <Typography variant="h4" fontWeight="bold">
@@ -29,22 +26,12 @@ const NavBar: FC<NavBarProps> = memo(props => {
             </Box>
 
             <Box sx={{ display: 'flex' }}>
-              <MenuItem sx={{ fontSize: '1.2rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
-                Activities
-              </MenuItem>
+              <MenuItemLink href="/activities">Activities</MenuItemLink>
 
-              <MenuItem sx={{ fontSize: '1.2rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
-                About
-              </MenuItem>
-
-              <MenuItem sx={{ fontSize: '1.2rem', fontWeight: 'bold', textTransform: 'uppercase' }}>
-                Contact
-              </MenuItem>
+              <MenuItem href="/activities/create">Create activity</MenuItem>
             </Box>
 
-            <Button size="large" variant="contained" color="warning" onClick={onOpenForm}>
-              Create activity
-            </Button>
+            <MenuItem>User menu</MenuItem>
           </Toolbar>
         </Container>
       </AppBar>

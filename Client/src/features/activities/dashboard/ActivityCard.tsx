@@ -1,18 +1,22 @@
-import { memo, FC } from 'react';
+import { memo, FC, useCallback } from 'react';
 
+import { Link } from 'react-router';
 import { Box, Button, Card, CardActions, CardContent, Chip, Typography } from '@mui/material';
 
 import { useActivities } from '../../../lib/hooks/useActivities';
 
 type ActivityCardProps = {
   activity: Activity;
-  onSelectActivity: (id: string) => void;
 };
 
 const ActivityCard: FC<ActivityCardProps> = memo(props => {
-  const { activity, onSelectActivity } = props;
+  const { activity } = props;
 
   const { deleteActivity } = useActivities();
+
+  const handleDeleteActivity = useCallback(() => {
+    deleteActivity.mutate(activity.id);
+  }, [activity.id, deleteActivity]);
 
   return (
     <Card sx={{ borderRadius: 3 }}>
@@ -32,7 +36,7 @@ const ActivityCard: FC<ActivityCardProps> = memo(props => {
         <Chip variant="outlined" label={activity.category} />
 
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button size="medium" variant="contained" onClick={() => onSelectActivity(activity.id)}>
+          <Button size="medium" variant="contained" href={`/activities/${activity.id}`} LinkComponent={Link}>
             View
           </Button>
 
@@ -41,7 +45,7 @@ const ActivityCard: FC<ActivityCardProps> = memo(props => {
             color="error"
             variant="contained"
             disabled={deleteActivity.isPending}
-            onClick={() => deleteActivity.mutate(activity.id)}
+            onClick={handleDeleteActivity}
           >
             Delete
           </Button>

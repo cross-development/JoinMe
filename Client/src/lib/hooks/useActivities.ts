@@ -2,15 +2,21 @@ import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanst
 
 import agent from '../api/agent';
 
+type UseActivitiesParamsType = {
+  id?: string;
+};
+
 type UseActivitiesReturnType = {
   activities?: Activity[];
+  activity?: Activity;
+  isLoadingActivity: boolean;
   isPending: boolean;
   createActivity: UseMutationResult<string, Error, Activity, unknown>;
   updateActivity: UseMutationResult<void, Error, Activity, unknown>;
   deleteActivity: UseMutationResult<void, Error, string, unknown>;
 };
 
-export const useActivities = (): UseActivitiesReturnType => {
+export const useActivities = (params: UseActivitiesParamsType = {}): UseActivitiesReturnType => {
   const queryClient = useQueryClient();
 
   const { data: activities, isPending } = useQuery({
@@ -20,6 +26,16 @@ export const useActivities = (): UseActivitiesReturnType => {
 
       return response.data;
     },
+  });
+
+  const { data: activity, isLoading: isLoadingActivity } = useQuery({
+    queryKey: ['activities', params?.id],
+    queryFn: async () => {
+      const response = await agent.get<Activity>(`/activities/${params?.id}`);
+
+      return response.data;
+    },
+    enabled: !!params?.id,
   });
 
   const createActivity = useMutation({
@@ -51,5 +67,13 @@ export const useActivities = (): UseActivitiesReturnType => {
     },
   });
 
-  return { activities, isPending, createActivity, updateActivity, deleteActivity };
+  return {
+    activities,
+    activity,
+    isLoadingActivity,
+    isPending,
+    createActivity,
+    updateActivity,
+    deleteActivity,
+  };
 };

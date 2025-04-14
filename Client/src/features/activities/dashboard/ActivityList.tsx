@@ -1,25 +1,25 @@
-import { FC, memo } from 'react';
+import { FC } from 'react';
 
-import { Box } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 import ActivityCard from './ActivityCard';
+import { useActivities } from '../../../lib/hooks/useActivities';
 
-type ActivityListProps = {
-  activities: Array<Activity>;
-  onSelectActivity: (id: string) => void;
-};
+const ActivityList: FC = () => {
+  const { activities, isPending } = useActivities();
 
-const ActivityList: FC<ActivityListProps> = memo(props => {
-  const { activities, onSelectActivity } = props;
+  if (!activities || isPending) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       {activities.map(activity => (
-        <ActivityCard key={activity.id} activity={activity} onSelectActivity={onSelectActivity} />
+        <ActivityCard key={activity.id} activity={activity} />
       ))}
     </Box>
   );
-});
+};
 
 ActivityList.displayName = 'ActivityList';
 
