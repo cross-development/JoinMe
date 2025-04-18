@@ -28,7 +28,7 @@ const NavBar: FC = memo(() => {
             <Box sx={{ display: 'flex' }}>
               <MenuItemLink href="/activities">Activities</MenuItemLink>
 
-              <MenuItem href="/activities/create">Create activity</MenuItem>
+              <MenuItemLink href="/activities/create">Create activity</MenuItemLink>
             </Box>
 
             <MenuItem>User menu</MenuItem>
