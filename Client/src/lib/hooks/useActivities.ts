@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router';
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import agent from '../api/agent';
@@ -19,6 +20,8 @@ type UseActivitiesReturnType = {
 export const useActivities = (params: UseActivitiesParamsType = {}): UseActivitiesReturnType => {
   const queryClient = useQueryClient();
 
+  const location = useLocation();
+
   const { data: activities, isPending } = useQuery({
     queryKey: ['activities'],
     queryFn: async () => {
@@ -26,6 +29,7 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
 
       return response.data;
     },
+    enabled: !params?.id && location.pathname === '/activities',
   });
 
   const { data: activity, isLoading: isLoadingActivity } = useQuery({
