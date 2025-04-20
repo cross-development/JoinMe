@@ -36,6 +36,8 @@ const NavBar: FC = memo(() => {
               <MenuItemLink href="/activities">Activities</MenuItemLink>
 
               <MenuItemLink href="/activities/create">Create activity</MenuItemLink>
+
+              <MenuItemLink href="/errors">Errors</MenuItemLink>
             </Box>
 
             <MenuItem>User menu</MenuItem>

@@ -1,29 +1,36 @@
 ﻿using AutoMapper;
 using MediatR;
-using Domain;
+using Application.Activities.Dtos;
+using Application.Core;
 using Persistence;
 
 namespace Application.Activities.Commands;
 
 public class EditActivity
 {
-    public class Command : IRequest<Unit>
+    public class Command : IRequest<Result<Unit>>
     {
-        public required Activity Activity { get; set; }
+        public required EditActivityDto ActivityDto { get; set; }
     }
 
-    public class Handler(ApplicationDbContext dbContext, IMapper mapper) : IRequestHandler<Command, Unit>
+    public class Handler(ApplicationDbContext dbContext, IMapper mapper) : IRequestHandler<Command, Result<Unit>>
     {
-        public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+        public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
         {
-            var activity = await dbContext.Activities.FindAsync([request.Activity.Id], cancellationToken)
-                           ?? throw new Exception("Activity not found");
+            var activity = await dbContext.Activities.FindAsync([request.ActivityDto.Id], cancellationToken);
 
-            mapper.Map(request.Activity, activity);
+            if (activity is null)
+            {
+                return Result<Unit>.Failure("Activity not found", 404);
+            }
 
-            await dbContext.SaveChangesAsync(cancellationToken);
+            mapper.Map(request.ActivityDto, activity);
 
-            return Unit.Value;
+            var result = await dbContext.SaveChangesAsync(cancellationToken) > 0;
+
+            return !result
+                ? Result<Unit>.Failure("Failed to update the activity", 400)
+                : Result<Unit>.Success(Unit.Value);
         }
     }
 }

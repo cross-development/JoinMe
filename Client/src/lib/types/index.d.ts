@@ -11,3 +11,11 @@ type Activity = {
   latitude: number;
   longitude: number;
 };
+
+type ValidationError = {
+  title: string;
+  type: string;
+  status: number;
+  detail: string;
+  errors: Record<string, string[]>;
+};
