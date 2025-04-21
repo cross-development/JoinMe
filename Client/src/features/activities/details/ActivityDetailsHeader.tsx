@@ -76,7 +76,7 @@ const ActivityDetailsHeader: FC<ActivityDetailsHeaderProps> = memo(props => {
                 variant="contained"
                 LinkComponent={Link}
                 disabled={isCancelled}
-                href={`/manage/activityId`}
+                href={`/manage/${activity.id}`}
               >
                 Manage Event
               </Button>
