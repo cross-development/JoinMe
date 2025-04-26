@@ -1,8 +1,9 @@
-import { FC, memo } from 'react';
+import { FC, memo, useState } from 'react';
 
 import { CalendarToday, Info, Place } from '@mui/icons-material';
-import { Divider, Grid2, Paper, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid2, Paper, Typography } from '@mui/material';
 
+import ActivityMap from './ActivityMap';
 import { formatDate } from '../../../lib/utils/date';
 
 type ActivityDetailsInfoProps = {
@@ -11,6 +12,8 @@ type ActivityDetailsInfoProps = {
 
 const ActivityDetailsInfo: FC<ActivityDetailsInfoProps> = memo(props => {
   const { activity } = props;
+
+  const [isMapOpen, setIsMapOpen] = useState(false);
 
   return (
     <Paper sx={{ mb: 2 }}>
@@ -43,12 +46,26 @@ const ActivityDetailsInfo: FC<ActivityDetailsInfoProps> = memo(props => {
           <Place color="info" fontSize="large" />
         </Grid2>
 
-        <Grid2 size={11}>
+        <Grid2 size={11} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography>
             {activity.venue}, {activity.city}, {activity.country}
           </Typography>
+
+          <Button onClick={() => setIsMapOpen(prevState => !prevState)}>
+            {isMapOpen ? 'Hide map' : 'Show map'}
+          </Button>
         </Grid2>
       </Grid2>
+
+      {isMapOpen && (
+        <Box sx={{ height: 400, zIndex: 1000, display: 'block' }}>
+          <ActivityMap
+            venue={activity.venue}
+            country={activity.country}
+            position={[activity.latitude, activity.longitude]}
+          />
+        </Box>
+      )}
     </Paper>
   );
 });

@@ -8,6 +8,7 @@ import { Paper, Box, Typography, Button } from '@mui/material';
 import TextInput from '../../../app/shared/components/TextInput';
 import SelectInput from '../../../app/shared/components/SelectInput';
 import DateTimeInput from '../../../app/shared/components/DateTimeInput';
+import LocationInput from '../../../app/shared/components/LocationInput';
 import { useActivities } from '../../../lib/hooks/useActivities';
 import { categoryOptions } from '../../../lib/constants/categoryOptions';
 import { activitySchema, ActivitySchema } from '../../../lib/schemas/activitySchema';
@@ -27,22 +28,37 @@ const ActivityForm: FC = () => {
 
   useEffect(() => {
     if (activity) {
-      reset(activity);
+      reset({
+        ...activity,
+        location: {
+          country: activity.country,
+          city: activity.city,
+          venue: activity.venue,
+          latitude: activity.latitude,
+          longitude: activity.longitude,
+        },
+      });
     }
   }, [activity, reset]);
 
   const handleSubmitForm = useCallback(
     async (data: ActivitySchema) => {
-      if (activity) {
-        // data.id = activity.id;
+      const { location, ...rest } = data;
+      const flattenedData = { ...rest, ...location };
 
-        await updateActivity.mutateAsync(data as Activity, {
-          onSuccess: () => navigate(`/activities/${activity.id}`),
-        });
-      } else {
-        await createActivity.mutateAsync(data as Activity, {
-          onSuccess: id => navigate(`/activities/${id}`),
-        });
+      try {
+        if (activity) {
+          await updateActivity.mutateAsync(
+            { ...activity, ...flattenedData },
+            { onSuccess: () => navigate(`/activities/${activity.id}`) },
+          );
+        } else {
+          await createActivity.mutateAsync(flattenedData as Activity, {
+            onSuccess: id => navigate(`/activities/${id}`),
+          });
+        }
+      } catch (error) {
+        console.log('error :>> ', error);
       }
     },
     [activity, updateActivity, createActivity, navigate],
@@ -67,15 +83,13 @@ const ActivityForm: FC = () => {
 
         <TextInput multiline name="description" label="Description" rows={3} control={control} />
 
-        <SelectInput name="category" label="Category" control={control} items={categoryOptions} />
+        <Box sx={{ display: 'flex', gap: 3 }}>
+          <SelectInput name="category" label="Category" control={control} items={categoryOptions} />
 
-        <DateTimeInput name="date" label="Date" control={control} />
+          <DateTimeInput name="date" label="Date" control={control} />
+        </Box>
 
-        <TextInput name="country" label="Country" control={control} />
-
-        <TextInput name="city" label="City" control={control} />
-
-        <TextInput name="venue" label="Venue" control={control} />
+        <LocationInput name="location" label="Country" control={control} />
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 3 }}>
           <Button color="inherit" href="/activities" LinkComponent={Link}>
