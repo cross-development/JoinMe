@@ -1,5 +1,9 @@
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
+using Domain;
 using API.Middleware;
 using Application.Core;
 using Application.Activities.Queries;
@@ -9,7 +13,12 @@ using Persistence;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+
+    options.Filters.Add(new AuthorizeFilter(policy));
+});
 builder.Services.AddCors();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -23,6 +32,12 @@ builder.Services.AddMediatR(configuration =>
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 builder.Services.AddTransient<ExceptionMiddleware>();
+builder.Services.AddIdentityApiEndpoints<User>(options =>
+{
+    options.User.RequireUniqueEmail = true;
+})
+.AddRoles<IdentityRole>()
+.AddEntityFrameworkStores<ApplicationDbContext>();
 
 // Building the app.
 var app = builder.Build();
@@ -34,9 +49,15 @@ app.UseCors(options =>
 {
     options.AllowAnyHeader()
         .AllowAnyMethod()
+        .AllowCredentials()
         .WithOrigins("http://localhost:3000", "https://localhost:3000");
 });
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapControllers();
+app.MapGroup("api").MapIdentityApi<User>();
 
 await MigrateDatabaseAsync(app);
 
@@ -50,9 +71,10 @@ async Task MigrateDatabaseAsync(IHost host)
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
+        var userManager = services.GetRequiredService<UserManager<User>>();
 
         await context.Database.MigrateAsync();
-        await DbInitializer.SeedData(context);
+        await DbInitializer.SeedData(context, userManager);
     }
     catch (Exception e)
     {
