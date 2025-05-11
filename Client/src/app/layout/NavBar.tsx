@@ -5,11 +5,15 @@ import { Observer } from 'mobx-react-lite';
 import { Group } from '@mui/icons-material';
 import { AppBar, Box, Container, LinearProgress, MenuItem, Toolbar, Typography } from '@mui/material';
 
+import UserMenu from './UserMenu';
 import MenuItemLink from '../shared/components/MenuItemLink';
 import { useStore } from '../../lib/hooks/useStore';
+import { useAccount } from '../../lib/hooks/useAccount';
 
 const NavBar: FC = memo(() => {
   const { uiStore } = useStore();
+
+  const { currentUser } = useAccount();
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -35,12 +39,20 @@ const NavBar: FC = memo(() => {
             <Box sx={{ display: 'flex' }}>
               <MenuItemLink href="/activities">Activities</MenuItemLink>
 
-              <MenuItemLink href="/activities/create">Create activity</MenuItemLink>
-
               <MenuItemLink href="/errors">Errors</MenuItemLink>
             </Box>
 
-            <MenuItem>User menu</MenuItem>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              {currentUser ? (
+                <UserMenu />
+              ) : (
+                <>
+                  <MenuItem href="/login">Login</MenuItem>
+
+                  <MenuItem href="/register">Register</MenuItem>
+                </>
+              )}
+            </Box>
           </Toolbar>
         </Container>
 

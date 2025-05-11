@@ -9,6 +9,7 @@ const agent = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

@@ -50,3 +50,10 @@ type LocationIQAddress = {
   country: string;
   country_code: string;
 };
+
+type User = {
+  id: string;
+  email: string;
+  displayName: string;
+  imageUrl?: string;
+};

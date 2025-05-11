@@ -2,6 +2,7 @@ import { useLocation } from 'react-router';
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import agent from '../api/agent';
+import { useAccount } from './useAccount';
 
 type UseActivitiesParamsType = {
   id?: string;
@@ -11,7 +12,7 @@ type UseActivitiesReturnType = {
   activities?: Activity[];
   activity?: Activity;
   isLoadingActivity: boolean;
-  isPending: boolean;
+  isLoading: boolean;
   createActivity: UseMutationResult<string, Error, Activity, unknown>;
   updateActivity: UseMutationResult<void, Error, Activity, unknown>;
   deleteActivity: UseMutationResult<void, Error, string, unknown>;
@@ -22,14 +23,16 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
 
   const location = useLocation();
 
-  const { data: activities, isPending } = useQuery({
+  const { currentUser } = useAccount();
+
+  const { data: activities, isLoading } = useQuery({
     queryKey: ['activities'],
     queryFn: async () => {
       const response = await agent.get<Activity[]>('/activities');
 
       return response.data;
     },
-    enabled: !params?.id && location.pathname === '/activities',
+    enabled: !params?.id && location.pathname === '/activities' && !!currentUser,
   });
 
   const { data: activity, isLoading: isLoadingActivity } = useQuery({
@@ -39,7 +42,7 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
 
       return response.data;
     },
-    enabled: !!params?.id,
+    enabled: !!params?.id && !!currentUser,
   });
 
   const createActivity = useMutation({
@@ -75,7 +78,7 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
     activities,
     activity,
     isLoadingActivity,
-    isPending,
+    isLoading,
     createActivity,
     updateActivity,
     deleteActivity,

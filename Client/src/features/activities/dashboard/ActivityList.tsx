@@ -6,10 +6,14 @@ import ActivityCard from './ActivityCard';
 import { useActivities } from '../../../lib/hooks/useActivities';
 
 const ActivityList: FC = () => {
-  const { activities, isPending } = useActivities();
+  const { activities, isLoading } = useActivities();
 
-  if (!activities || isPending) {
+  if (isLoading) {
     return <Typography>Loading...</Typography>;
+  }
+
+  if (!activities) {
+    return <Typography>Not activities found</Typography>;
   }
 
   return (
