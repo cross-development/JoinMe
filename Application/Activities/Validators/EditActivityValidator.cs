@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using Application.Activities.Commands;
-using Application.Activities.Dtos;
+using Application.Activities.DTOs;
 
 namespace Application.Activities.Validators;
 

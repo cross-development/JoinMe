@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using Application.Activities.Dtos;
+using Application.Activities.DTOs;
 using Application.Core;
 using Persistence;
 

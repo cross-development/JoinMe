@@ -8,6 +8,8 @@ using API.Middleware;
 using Application.Core;
 using Application.Activities.Queries;
 using Application.Activities.Validators;
+using Application.Interfaces;
+using Infrastructure.Security;
 using Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +31,7 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>();
     configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
 });
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 builder.Services.AddTransient<ExceptionMiddleware>();
@@ -38,6 +41,12 @@ builder.Services.AddIdentityApiEndpoints<User>(options =>
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("IsActivityHost", policy =>
+    {
+        policy.Requirements.Add(new IsHostRequirement());
+    });
+builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
 
 // Building the app.
 var app = builder.Build();
