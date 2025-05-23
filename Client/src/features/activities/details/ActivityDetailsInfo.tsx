@@ -51,7 +51,7 @@ const ActivityDetailsInfo: FC<ActivityDetailsInfoProps> = memo(props => {
             {activity.venue}, {activity.city}, {activity.country}
           </Typography>
 
-          <Button onClick={() => setIsMapOpen(prevState => !prevState)}>
+          <Button onClick={() => setIsMapOpen(prevState => !prevState)} sx={{ whiteSpace: 'nowrap', mx: 2 }}>
             {isMapOpen ? 'Hide map' : 'Show map'}
           </Button>
         </Grid2>

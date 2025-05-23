@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
-import { Outlet, useLocation } from 'react-router';
 import { Box, Container, CssBaseline } from '@mui/material';
+import { Outlet, ScrollRestoration, useLocation } from 'react-router';
 
 import NavBar from './NavBar';
 import HomePage from '../../features/home/HomePage';
@@ -11,6 +11,8 @@ const App: FC = () => {
 
   return (
     <Box sx={{ bgcolor: '#eeeeee', minHeight: '100vh' }}>
+      <ScrollRestoration />
+
       <CssBaseline />
 
       {location.pathname === '/' ? (

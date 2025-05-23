@@ -16,6 +16,7 @@ type UseActivitiesReturnType = {
   createActivity: UseMutationResult<string, Error, Activity, unknown>;
   updateActivity: UseMutationResult<void, Error, Activity, unknown>;
   deleteActivity: UseMutationResult<void, Error, string, unknown>;
+  updateAttendance: UseMutationResult<void, Error, string, unknown>;
 };
 
 export const useActivities = (params: UseActivitiesParamsType = {}): UseActivitiesReturnType => {
@@ -32,6 +33,13 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
 
       return response.data;
     },
+    select: data => {
+      return data.map(activity => ({
+        ...activity,
+        isHost: activity.hostId === currentUser?.id,
+        isGoing: activity.attendees.some(attendee => attendee.id === currentUser?.id),
+      }));
+    },
     enabled: !params?.id && location.pathname === '/activities' && !!currentUser,
   });
 
@@ -41,6 +49,13 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
       const response = await agent.get<Activity>(`/activities/${params?.id}`);
 
       return response.data;
+    },
+    select: data => {
+      return {
+        ...data,
+        isHost: data.hostId === currentUser?.id,
+        isGoing: data.attendees.some(attendee => attendee.id === currentUser?.id),
+      };
     },
     enabled: !!params?.id && !!currentUser,
   });
@@ -74,6 +89,44 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
     },
   });
 
+  const updateAttendance = useMutation({
+    mutationFn: async (id: string) => {
+      await agent.post(`/activities/${id}/attend`);
+    },
+    onMutate: async (activityId: string) => {
+      await queryClient.cancelQueries({ queryKey: ['activities', activityId] });
+
+      const previousActivity = queryClient.getQueryData<Activity>(['activities', activityId]);
+
+      queryClient.setQueryData<Activity>(['activities', activityId], oldActivity => {
+        if (!oldActivity || !currentUser) return oldActivity;
+
+        const isHost = oldActivity.hostId === currentUser.id;
+        const isAttending = oldActivity.attendees.some(attendee => attendee.id === currentUser.id);
+
+        return {
+          ...oldActivity,
+          isCanceled: isHost ? !oldActivity.isCanceled : oldActivity.isCanceled,
+          attendees: isAttending
+            ? isHost
+              ? oldActivity.attendees
+              : oldActivity.attendees.filter(attendee => attendee.id !== currentUser.id)
+            : [
+                ...oldActivity.attendees,
+                { id: currentUser.id, displayName: currentUser.displayName, imageUrl: currentUser.imageUrl },
+              ],
+        };
+      });
+
+      return { previousActivity };
+    },
+    onError: async (_, activityId, context) => {
+      if (context?.previousActivity) {
+        queryClient.setQueryData(['activities', activityId], context.previousActivity);
+      }
+    },
+  });
+
   return {
     activities,
     activity,
@@ -82,5 +135,6 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
     createActivity,
     updateActivity,
     deleteActivity,
+    updateAttendance,
   };
 };
