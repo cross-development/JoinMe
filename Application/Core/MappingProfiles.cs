@@ -30,5 +30,7 @@ public class MappingProfiles : Profile
                 configExpression.MapFrom(activityAttendee => activityAttendee.User.ImageUrl))
             .ForMember(userProfileDto => userProfileDto.Id, configExpression =>
                 configExpression.MapFrom(activityAttendee => activityAttendee.User.Id));
+
+        CreateMap<User, UserProfileDto>();
     }
 }

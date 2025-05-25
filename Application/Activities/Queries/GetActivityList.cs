@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MediatR;
 using AutoMapper.QueryableExtensions;
 using AutoMapper;
-using MediatR;
 using Application.Activities.DTOs;
 using Persistence;
 

@@ -28,9 +28,9 @@ public class EditActivity
 
             var result = await dbContext.SaveChangesAsync(cancellationToken) > 0;
 
-            return !result
-                ? Result<Unit>.Failure("Failed to update the activity", 400)
-                : Result<Unit>.Success(Unit.Value);
+            return result
+                ? Result<Unit>.Success(Unit.Value)
+                : Result<Unit>.Failure("Failed to update the activity", 400);
         }
     }
 }

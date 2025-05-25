@@ -9,6 +9,7 @@ using Application.Core;
 using Application.Activities.Queries;
 using Application.Activities.Validators;
 using Application.Interfaces;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using Persistence;
 
@@ -31,21 +32,21 @@ builder.Services.AddMediatR(configuration =>
     configuration.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>();
     configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
 });
-builder.Services.AddScoped<IUserAccessor, UserAccessor>();
 builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 builder.Services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
-builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddIdentityApiEndpoints<User>(options =>
 {
     options.User.RequireUniqueEmail = true;
-})
-.AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<ApplicationDbContext>();
+}).AddRoles<IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("IsActivityHost", policy =>
     {
         policy.Requirements.Add(new IsHostRequirement());
     });
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+builder.Services.AddScoped<IUserAccessor, UserAccessor>();
+builder.Services.AddScoped<IPhotoService, PhotoService>();
+builder.Services.AddTransient<ExceptionMiddleware>();
 builder.Services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
 
 // Building the app.

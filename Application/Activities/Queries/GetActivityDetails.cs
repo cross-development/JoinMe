@@ -1,9 +1,9 @@
-﻿using Application.Activities.DTOs;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using MediatR;
 using AutoMapper.QueryableExtensions;
 using AutoMapper;
-using MediatR;
 using Application.Core;
+using Application.Activities.DTOs;
 using Persistence;
 
 namespace Application.Activities.Queries;
@@ -23,9 +23,9 @@ public class GetActivityDetails
                 .ProjectTo<ActivityDto>(mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(activity => activity.Id == request.Id, cancellationToken);
 
-            return activity == null
-                ? Result<ActivityDto>.Failure("Activity not found", 404)
-                : Result<ActivityDto>.Success(activity);
+            return activity is not null
+                ? Result<ActivityDto>.Success(activity)
+                : Result<ActivityDto>.Failure("Activity not found", 404);
         }
     }
 }
