@@ -1,8 +1,8 @@
 import { toast } from 'react-toastify';
 import axios, { AxiosError } from 'axios';
 
-import { store } from '../stores/store';
-import { router } from '../../app/router/Routes';
+import { router } from '@/app/router/Routes';
+import { store } from '@/lib/stores/store';
 
 const agent = axios.create({
   baseURL: import.meta.env.VITE_API_URL,

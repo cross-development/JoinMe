@@ -3,7 +3,7 @@ import { FC, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { Alert, Button, ButtonGroup, Typography } from '@mui/material';
 
-import agent from '../../lib/api/agent.ts';
+import agent from '@/lib/api/agent.ts';
 
 const TestErrors: FC = () => {
   const [validationErrors, setValidationErrors] = useState<string[]>([]);

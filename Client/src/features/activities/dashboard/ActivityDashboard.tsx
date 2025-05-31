@@ -2,8 +2,8 @@ import { FC } from 'react';
 
 import { Grid2 } from '@mui/material';
 
-import ActivityList from './ActivityList';
-import ActivityFilters from './ActivityFilters';
+import ActivityList from '@/features/activities/dashboard/ActivityList';
+import ActivityFilters from '@/features/activities/dashboard/ActivityFilters';
 
 const ActivityDashboard: FC = () => (
   <Grid2 container spacing={3}>

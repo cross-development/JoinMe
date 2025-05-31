@@ -1,21 +1,28 @@
-import { memo, FC } from 'react';
+import { memo, FC, useState } from 'react';
 
 import { useParams } from 'react-router';
 import { Box, Button, Divider, Typography } from '@mui/material';
 
-import { useProfile } from '../../lib/hooks/useProfile';
+import ProfileEdit from '@/features/profiles/ProfileEdit';
+import { useProfile } from '@/lib/hooks/useProfile';
 
 const ProfileAbout: FC = memo(() => {
+  const [editMode, setEditMode] = useState(false);
+
   const { id } = useParams<{ id: string }>();
 
-  const { profile } = useProfile({ id });
+  const { profile, isCurrentUser } = useProfile({ id });
 
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="h5">About {profile?.displayName}</Typography>
 
-        <Button>Edit profule</Button>
+        {isCurrentUser && (
+          <Button variant="outlined" onClick={() => setEditMode(prevState => !prevState)}>
+            {editMode ? 'Cancel' : 'Edit Profile'}
+          </Button>
+        )}
       </Box>
 
       <Divider sx={{ my: 2 }} />
@@ -24,6 +31,8 @@ const ProfileAbout: FC = memo(() => {
         <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
           {profile?.bio || 'No description added yet.'}
         </Typography>
+
+        {editMode && <ProfileEdit onSetEditMode={setEditMode} />}
       </Box>
     </Box>
   );

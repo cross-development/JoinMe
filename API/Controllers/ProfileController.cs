@@ -47,4 +47,13 @@ public class ProfileController : BaseApiController
 
         return HandleResult(result);
     }
+
+
+    [HttpPut]
+    public async Task<ActionResult<UserProfileDto>> UpdateProfile(EditProfile.Command command)
+    {
+        var result = await Mediator.Send(command);
+
+        return HandleResult(result);
+    }
 }

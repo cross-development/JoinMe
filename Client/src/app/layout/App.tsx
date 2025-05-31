@@ -3,8 +3,8 @@ import { FC } from 'react';
 import { Box, Container, CssBaseline } from '@mui/material';
 import { Outlet, ScrollRestoration, useLocation } from 'react-router';
 
-import NavBar from './NavBar';
-import HomePage from '../../features/home/HomePage';
+import NavBar from '@/app/layout/NavBar';
+import HomePage from '@/features/home/HomePage';
 
 const App: FC = () => {
   const location = useLocation();

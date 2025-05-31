@@ -3,9 +3,9 @@ import { FC, memo } from 'react';
 import { useParams } from 'react-router';
 import { Grid2, Typography } from '@mui/material';
 
-import ProfileHeader from './ProfileHeader';
-import ProfileContent from './ProfileContent';
-import { useProfile } from '../../lib/hooks/useProfile';
+import ProfileHeader from '@/features/profiles/ProfileHeader';
+import ProfileContent from '@/features/profiles/ProfileContent';
+import { useProfile } from '@/lib/hooks/useProfile';
 
 const ProfilePage: FC = memo(() => {
   const { id } = useParams<{ id: string }>();

@@ -2,8 +2,8 @@ import { FC } from 'react';
 
 import { Box, Typography } from '@mui/material';
 
-import ActivityCard from './ActivityCard';
-import { useActivities } from '../../../lib/hooks/useActivities';
+import ActivityCard from '@/features/activities/dashboard/ActivityCard';
+import { useActivities } from '@/lib/hooks/useActivities';
 
 const ActivityList: FC = () => {
   const { activities, isLoading } = useActivities();

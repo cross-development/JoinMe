@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { Add, Logout, Person } from '@mui/icons-material';
 import { Avatar, Box, ListItemIcon, ListItemText } from '@mui/material';
 
-import { useAccount } from '../../lib/hooks/useAccount';
+import { useAccount } from '@/lib/hooks/useAccount';
 
 const UserMenu: FC = memo(() => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

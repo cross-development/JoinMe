@@ -3,18 +3,20 @@ import { FC, memo, useCallback, useState } from 'react';
 import { useParams } from 'react-router';
 import { Box, Button, Divider, ImageList, ImageListItem, Typography } from '@mui/material';
 
-import { useProfile } from '../../lib/hooks/useProfile';
-import StarButton from '../../app/shared/components/StarButton';
-import DeleteButton from '../../app/shared/components/DeleteButton';
-import PhotoUploadWidget from '../../app/shared/components/PhotoUploadWidget';
+import StarButton from '@/app/shared/components/StarButton';
+import DeleteButton from '@/app/shared/components/DeleteButton';
+import PhotoUploadWidget from '@/app/shared/components/PhotoUploadWidget';
+import { useProfile } from '@/lib/hooks/useProfile';
+import { useProfilePhotos } from '@/lib/hooks/useProfilePhotos';
 
 const ProfilePhotos: FC = memo(() => {
   const { id } = useParams<{ id: string }>();
 
   const [editMode, setEditMode] = useState(false);
 
-  const { profile, photos, isLoadingPhotos, isCurrentUser, uploadPhoto, setMainPhoto, deletePhoto } =
-    useProfile({ id });
+  const { profile, isCurrentUser } = useProfile({ id });
+
+  const { photos, isLoadingPhotos, uploadPhoto, deletePhoto, setMainPhoto } = useProfilePhotos({ id });
 
   const handlePhotoUpload = useCallback(
     (file: Blob) => {

@@ -6,9 +6,9 @@ import { LockOpen } from '@mui/icons-material';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Paper, Typography } from '@mui/material';
 
-import TextInput from '../../app/shared/components/TextInput';
-import { useAccount } from '../../lib/hooks/useAccount';
-import { registerSchema, RegisterSchema } from '../../lib/schemas/registerSchema';
+import TextInput from '@/app/shared/components/TextInput';
+import { useAccount } from '@/lib/hooks/useAccount';
+import { registerSchema, RegisterSchema } from '@/lib/schemas/registerSchema';
 
 const RegisterForm: FC = memo(() => {
   const {

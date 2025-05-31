@@ -3,11 +3,11 @@ import { FC } from 'react';
 import { useParams } from 'react-router';
 import { Grid2, Typography } from '@mui/material';
 
-import ActivityDetailsHeader from './ActivityDetailsHeader';
-import ActivityDetailsInfo from './ActivityDetailsInfo';
-import ActivityDetailsChat from './ActivityDetailsChat';
-import ActivityDetailsSidebar from './ActivityDetailsSidebar';
-import { useActivities } from '../../../lib/hooks/useActivities';
+import ActivityDetailsHeader from '@/features/activities/details/ActivityDetailsHeader';
+import ActivityDetailsInfo from '@/features/activities/details/ActivityDetailsInfo';
+import ActivityDetailsChat from '@/features/activities/details/ActivityDetailsChat';
+import ActivityDetailsSidebar from '@/features/activities/details/ActivityDetailsSidebar';
+import { useActivities } from '@/lib/hooks/useActivities';
 
 const ActivityDetailsPage: FC = () => {
   const { id } = useParams<{ id: string }>();

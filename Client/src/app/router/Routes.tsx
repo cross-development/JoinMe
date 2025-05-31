@@ -1,17 +1,17 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 
-import RequireAuth from './RequireAuth';
-import App from '../layout/App';
-import HomePage from '../../features/home/HomePage';
-import ActivityForm from '../../features/activities/form/ActivityForm';
-import ActivityDetailsPage from '../../features/activities/details/ActivityDetailsPage';
-import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
-import TestErrors from '../../features/errors/TestErrors';
-import NotFound from '../../features/errors/NotFound';
-import ServerError from '../../features/errors/ServerError';
-import LoginForm from '../../features/account/LoginForm';
-import RegisterForm from '../../features/account/RegisterForm';
-import ProfilePage from '../../features/profiles/ProfilePage';
+import App from '@/app/layout/App';
+import RequireAuth from '@/app/router/RequireAuth';
+import HomePage from '@/features/home/HomePage';
+import ActivityForm from '@/features/activities/form/ActivityForm';
+import ActivityDetailsPage from '@/features/activities/details/ActivityDetailsPage';
+import ActivityDashboard from '@/features/activities/dashboard/ActivityDashboard';
+import TestErrors from '@/features/errors/TestErrors';
+import NotFound from '@/features/errors/NotFound';
+import ServerError from '@/features/errors/ServerError';
+import LoginForm from '@/features/account/LoginForm';
+import RegisterForm from '@/features/account/RegisterForm';
+import ProfilePage from '@/features/profiles/ProfilePage';
 
 export const router = createBrowserRouter([
   {

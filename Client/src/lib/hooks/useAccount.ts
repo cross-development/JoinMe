@@ -2,9 +2,9 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import agent from '../api/agent';
-import { LoginSchema } from '../schemas/loginSchema';
-import { RegisterSchema } from '../schemas/registerSchema';
+import agent from '@/lib/api/agent';
+import { LoginSchema } from '@/lib/schemas/loginSchema';
+import { RegisterSchema } from '@/lib/schemas/registerSchema';
 
 type UseAccountReturnType = {
   currentUser?: User;

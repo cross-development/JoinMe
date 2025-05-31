@@ -3,7 +3,7 @@ import { FC, memo, MouseEvent, useState } from 'react';
 import { Link } from 'react-router';
 import { Avatar, Popover } from '@mui/material';
 
-import ProfileCard from '../../../features/profiles/ProfileCard';
+import ProfileCard from '@/features/profiles/ProfileCard';
 
 type AvatarPopoverProps = {
   profile: Profile;

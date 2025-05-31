@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import UiStore from './uiStore';
+import UiStore from '@/lib/stores/uiStore';
 
 interface Store {
   uiStore: UiStore;

@@ -2,8 +2,8 @@ import { FC, memo, useState, SyntheticEvent } from 'react';
 
 import { Box, Paper, Tab, Tabs } from '@mui/material';
 
-import ProfileAbout from './ProfileAbout';
-import ProfilePhotos from './ProfilePhotos';
+import ProfileAbout from '@/features/profiles/ProfileAbout';
+import ProfilePhotos from '@/features/profiles/ProfilePhotos';
 
 const ProfileContent: FC = memo(() => {
   const [value, setValue] = useState(0);

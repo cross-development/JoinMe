@@ -6,9 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useLocation, useNavigate } from 'react-router';
 import { Box, Button, Paper, Typography } from '@mui/material';
 
-import TextInput from '../../app/shared/components/TextInput';
-import { useAccount } from '../../lib/hooks/useAccount';
-import { loginSchema, LoginSchema } from '../../lib/schemas/loginSchema';
+import TextInput from '@/app/shared/components/TextInput';
+import { useAccount } from '@/lib/hooks/useAccount';
+import { loginSchema, LoginSchema } from '@/lib/schemas/loginSchema';
 
 const LoginForm: FC = memo(() => {
   const navigate = useNavigate();

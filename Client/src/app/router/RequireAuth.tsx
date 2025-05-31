@@ -3,7 +3,7 @@ import { FC, memo } from 'react';
 import { Typography } from '@mui/material';
 import { Navigate, Outlet, useLocation } from 'react-router';
 
-import { useAccount } from '../../lib/hooks/useAccount';
+import { useAccount } from '@/lib/hooks/useAccount';
 
 const RequireAuth: FC = memo(() => {
   const location = useLocation();

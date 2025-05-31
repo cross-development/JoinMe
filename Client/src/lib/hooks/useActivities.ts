@@ -1,8 +1,8 @@
 import { useLocation } from 'react-router';
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 
-import agent from '../api/agent';
-import { useAccount } from './useAccount';
+import agent from '@/lib/api/agent';
+import { useAccount } from '@/lib/hooks/useAccount';
 
 type UseActivitiesParamsType = {
   id?: string;

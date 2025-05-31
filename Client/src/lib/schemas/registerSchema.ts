@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { requiredString } from '../utils/validation';
+import { requiredString } from '@/lib/utils/validation';
 
 export const registerSchema = z.object({
   email: z.string().email(),

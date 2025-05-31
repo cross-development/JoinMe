@@ -15,8 +15,8 @@ import {
 } from '@mui/material';
 import { AccessTime, Place } from '@mui/icons-material';
 
-import { formatDate } from '../../../lib/utils/date';
-import AvatarPopover from '../../../app/shared/components/AvatarPopover';
+import AvatarPopover from '@/app/shared/components/AvatarPopover';
+import { formatDate } from '@/lib/utils/date';
 
 type ActivityCardProps = {
   activity: Activity;

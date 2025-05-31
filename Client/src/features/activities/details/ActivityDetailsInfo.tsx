@@ -3,8 +3,8 @@ import { FC, memo, useState } from 'react';
 import { CalendarToday, Info, Place } from '@mui/icons-material';
 import { Box, Button, Divider, Grid2, Paper, Typography } from '@mui/material';
 
-import ActivityMap from './ActivityMap';
-import { formatDate } from '../../../lib/utils/date';
+import ActivityMap from '@/features/activities/details/ActivityMap';
+import { formatDate } from '@/lib/utils/date';
 
 type ActivityDetailsInfoProps = {
   activity: Activity;

@@ -5,10 +5,10 @@ import { Observer } from 'mobx-react-lite';
 import { Group } from '@mui/icons-material';
 import { AppBar, Box, Container, LinearProgress, MenuItem, Toolbar, Typography } from '@mui/material';
 
-import UserMenu from './UserMenu';
-import MenuItemLink from '../shared/components/MenuItemLink';
-import { useStore } from '../../lib/hooks/useStore';
-import { useAccount } from '../../lib/hooks/useAccount';
+import UserMenu from '@/app/layout/UserMenu';
+import MenuItemLink from '@/app/shared/components/MenuItemLink';
+import { useStore } from '@/lib/hooks/useStore';
+import { useAccount } from '@/lib/hooks/useAccount';
 
 const NavBar: FC = memo(() => {
   const { uiStore } = useStore();

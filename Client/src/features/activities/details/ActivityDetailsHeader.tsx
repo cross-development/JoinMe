@@ -3,9 +3,9 @@ import { FC, memo } from 'react';
 import { Link } from 'react-router';
 import { Card, CardMedia, Box, Typography, Chip } from '@mui/material';
 
-import { formatDate } from '../../../lib/utils/date';
-import { useActivities } from '../../../lib/hooks/useActivities';
-import StyledButton from '../../../app/shared/components/StyledButton';
+import StyledButton from '@/app/shared/components/StyledButton';
+import { formatDate } from '@/lib/utils/date';
+import { useActivities } from '@/lib/hooks/useActivities';
 
 type ActivityDetailsHeaderProps = {
   activity: Activity;

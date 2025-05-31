@@ -5,13 +5,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate, useParams } from 'react-router';
 import { Paper, Box, Typography, Button } from '@mui/material';
 
-import TextInput from '../../../app/shared/components/TextInput';
-import SelectInput from '../../../app/shared/components/SelectInput';
-import DateTimeInput from '../../../app/shared/components/DateTimeInput';
-import LocationInput from '../../../app/shared/components/LocationInput';
-import { useActivities } from '../../../lib/hooks/useActivities';
-import { categoryOptions } from '../../../lib/constants/categoryOptions';
-import { activitySchema, ActivitySchema } from '../../../lib/schemas/activitySchema';
+import TextInput from '@/app/shared/components/TextInput';
+import SelectInput from '@/app/shared/components/SelectInput';
+import DateTimeInput from '@/app/shared/components/DateTimeInput';
+import LocationInput from '@/app/shared/components/LocationInput';
+import { useActivities } from '@/lib/hooks/useActivities';
+import { categoryOptions } from '@/lib/constants/categoryOptions';
+import { activitySchema, ActivitySchema } from '@/lib/schemas/activitySchema';
 
 const ActivityForm: FC = () => {
   const { id } = useParams<{ id?: string }>();
