@@ -31,7 +31,7 @@ const UserMenu: FC = memo(() => {
     <>
       <Button disableRipple size="large" onClick={handleClick} sx={{ color: 'inherit', fontSize: '1.1rem' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <Avatar />
+          <Avatar alt="current user image" src={currentUser?.imageUrl} />
 
           {currentUser?.displayName}
         </Box>
@@ -46,7 +46,7 @@ const UserMenu: FC = memo(() => {
           <ListItemText>Create Activity</ListItemText>
         </MenuItem>
 
-        <MenuItem LinkComponent={Link} href="/profile" onClick={handleClose}>
+        <MenuItem LinkComponent={Link} href={`/profile/${currentUser?.id}`} onClick={handleClose}>
           <ListItemIcon>
             <Person />
           </ListItemIcon>

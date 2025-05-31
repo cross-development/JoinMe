@@ -33,7 +33,7 @@ const ActivityCard: FC<ActivityCardProps> = memo(props => {
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <CardHeader
           title={activity.title}
-          avatar={<Avatar sx={{ height: 80, width: 80 }} />}
+          avatar={<Avatar alt="image of host" src={activity.hostImageUrl} sx={{ height: 80, width: 80 }} />}
           slotProps={{ title: { fontWeight: 'bold', fontSize: 20 } }}
           subheader={
             <>

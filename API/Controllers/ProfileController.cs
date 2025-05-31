@@ -32,7 +32,7 @@ public class ProfileController : BaseApiController
         return HandleResult(result);
     }
 
-    [HttpPut("{photoId}/set-main")]
+    [HttpPut("{photoId}/set-main-photo")]
     public async Task<ActionResult> SetMainPhoto(string photoId)
     {
         var result = await Mediator.Send(new SetMainPhoto.Command { PhotoId = photoId });

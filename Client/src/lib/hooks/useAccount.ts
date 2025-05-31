@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { useLocation, useNavigate } from 'react-router';
+import { useNavigate } from 'react-router';
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import agent from '../api/agent';
@@ -16,8 +16,6 @@ type UseAccountReturnType = {
 
 export const useAccount = (): UseAccountReturnType => {
   const navigate = useNavigate();
-
-  const location = useLocation();
 
   const queryClient = useQueryClient();
 
@@ -59,10 +57,7 @@ export const useAccount = (): UseAccountReturnType => {
 
       return response.data;
     },
-    enabled:
-      !queryClient.getQueryData(['user']) &&
-      location.pathname !== '/login' &&
-      location.pathname !== '/register',
+    enabled: !queryClient.getQueryData(['user']),
   });
 
   return { loginUser, registerUser, logoutUser, currentUser, isUserInfoLoading };

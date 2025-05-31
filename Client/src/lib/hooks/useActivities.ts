@@ -38,6 +38,7 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
         ...activity,
         isHost: activity.hostId === currentUser?.id,
         isGoing: activity.attendees.some(attendee => attendee.id === currentUser?.id),
+        hostImageUrl: activity.attendees.find(attendee => attendee.id === activity.hostId)?.imageUrl,
       }));
     },
     enabled: !params?.id && location.pathname === '/activities' && !!currentUser,
@@ -55,6 +56,7 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
         ...data,
         isHost: data.hostId === currentUser?.id,
         isGoing: data.attendees.some(attendee => attendee.id === currentUser?.id),
+        hostImageUrl: data?.attendees.find(attendee => attendee.id === data.hostId)?.imageUrl,
       };
     },
     enabled: !!params?.id && !!currentUser,
