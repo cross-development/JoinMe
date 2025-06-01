@@ -19,8 +19,6 @@ type ActivityDetailsSidebarProps = {
 const ActivityDetailsSidebar: FC<ActivityDetailsSidebarProps> = memo(props => {
   const { activity } = props;
 
-  const following = true; // TODO: Replace with actual logic to check if the user is following
-
   return (
     <>
       <Paper
@@ -47,7 +45,7 @@ const ActivityDetailsSidebar: FC<ActivityDetailsSidebarProps> = memo(props => {
                   <ListItemText>
                     <Typography variant="h6">{attendee.displayName}</Typography>
 
-                    {following && (
+                    {attendee.isFollowing && (
                       <Typography variant="body2" color="orange">
                         Following
                       </Typography>

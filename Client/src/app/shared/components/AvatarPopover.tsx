@@ -29,6 +29,7 @@ const AvatarPopover: FC<AvatarPopoverProps> = memo(props => {
         component={Link}
         onMouseEnter={handlePopoverOpen}
         onMouseLeave={handlePopoverClose}
+        sx={{ border: profile.isFollowing ? 3 : 0, borderColor: 'primary.main' }}
       />
 
       <Popover

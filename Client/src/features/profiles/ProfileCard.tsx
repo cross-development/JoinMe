@@ -11,11 +11,9 @@ type ProfileCardProps = {
 const ProfileCard: FC<ProfileCardProps> = memo(props => {
   const { profile } = props;
 
-  const following = false; // TODO: Replace with actual following state
-
   return (
     <Link to={`/profiles/${profile.id}`} style={{ textDecoration: 'none' }}>
-      <Card elevation={4} sx={{ borderRadius: 3, padding: 2, maxWidth: 300, textDecoration: 'none' }}>
+      <Card elevation={4} sx={{ borderRadius: 3, padding: 2, maxWidth: 250, textDecoration: 'none' }}>
         <CardMedia
           component="img"
           alt={profile?.displayName + ' image'}
@@ -36,7 +34,9 @@ const ProfileCard: FC<ProfileCardProps> = memo(props => {
               </Typography>
             )}
 
-            {following && <Chip size="small" label="Following" color="secondary" variant="outlined" />}
+            {profile.isFollowing && (
+              <Chip size="small" label="Following" color="secondary" variant="outlined" />
+            )}
           </Box>
         </CardContent>
 
@@ -45,7 +45,7 @@ const ProfileCard: FC<ProfileCardProps> = memo(props => {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
           <Person />
 
-          <Typography sx={{ ml: 1 }}>20 Followers</Typography>
+          <Typography sx={{ ml: 1 }}>{profile.followersCount} Followers</Typography>
         </Box>
       </Card>
     </Link>

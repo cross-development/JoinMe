@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MediatR;
 using AutoMapper;
+using MediatR;
 using Application.Activities.DTOs;
 using Application.Core;
 using Application.Interfaces;

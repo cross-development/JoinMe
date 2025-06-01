@@ -4,6 +4,7 @@ import { Box, Paper, Tab, Tabs } from '@mui/material';
 
 import ProfileAbout from '@/features/profiles/ProfileAbout';
 import ProfilePhotos from '@/features/profiles/ProfilePhotos';
+import ProfileFollowings from '@/features/profiles/ProfileFollowings';
 
 const ProfileContent: FC = memo(() => {
   const [value, setValue] = useState(0);
@@ -16,8 +17,8 @@ const ProfileContent: FC = memo(() => {
     { label: 'About', content: <ProfileAbout /> },
     { label: 'Photos', content: <ProfilePhotos /> },
     { label: 'Events', content: <>Events</> },
-    { label: 'Followers', content: <>Followers</> },
-    { label: 'Following', content: <>Following</> },
+    { label: 'Followers', content: <ProfileFollowings activeTab={value} /> },
+    { label: 'Following', content: <ProfileFollowings activeTab={value} /> },
   ];
 
   return (

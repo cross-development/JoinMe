@@ -7,13 +7,17 @@ import { EditProfileSchema } from '@/lib/schemas/editProfileSchema';
 
 type UseProfileParamsType = {
   id?: string;
+  predicate?: string;
 };
 
 type UseProfileReturnType = {
-  profile?: Profile;
   isLoadingProfile: boolean;
+  profile?: Profile;
   isCurrentUser: boolean;
   updateProfile: UseMutationResult<void, Error, EditProfileSchema, unknown>;
+  followings?: Profile[];
+  isLoadingFollowing: boolean;
+  updateFollowing: UseMutationResult<void, Error, void, unknown>;
 };
 
 export const useProfile = (params: UseProfileParamsType = {}): UseProfileReturnType => {
@@ -26,7 +30,19 @@ export const useProfile = (params: UseProfileParamsType = {}): UseProfileReturnT
 
       return response.data;
     },
-    enabled: !!params.id,
+    enabled: !!params.id && !params.predicate,
+  });
+
+  const { data: followings, isLoading: isLoadingFollowing } = useQuery({
+    queryKey: ['followings', params.id, params.predicate],
+    queryFn: async () => {
+      const response = await agent.get<Profile[]>(
+        `/profiles/${params.id}/follow-list?predicate=${params.predicate}`,
+      );
+
+      return response.data;
+    },
+    enabled: !!params.id && !!params.predicate,
   });
 
   const updateProfile = useMutation({
@@ -48,14 +64,36 @@ export const useProfile = (params: UseProfileParamsType = {}): UseProfileReturnT
     },
   });
 
+  const updateFollowing = useMutation({
+    mutationFn: async () => {
+      await agent.post(`/profiles/${params.id}/follow`);
+    },
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ['followings', params.id, 'followers'] });
+
+      queryClient.setQueryData<Profile>(['profile', params.id], profile => {
+        if (!profile) return profile;
+
+        return {
+          ...profile,
+          isFollowing: !profile.isFollowing,
+          followersCount: profile.isFollowing ? profile.followersCount - 1 : profile.followersCount + 1,
+        };
+      });
+    },
+  });
+
   const isCurrentUser = useMemo(() => {
     return params.id === queryClient.getQueryData<User>(['user'])?.id;
   }, [params.id, queryClient]);
 
   return {
+    isCurrentUser,
     profile,
     isLoadingProfile,
-    isCurrentUser,
     updateProfile,
+    followings,
+    isLoadingFollowing,
+    updateFollowing,
   };
 };

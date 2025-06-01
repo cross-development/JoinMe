@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MediatR;
+using AutoMapper.QueryableExtensions;
 using AutoMapper;
+using MediatR;
 using Application.Activities.DTOs;
 using Application.Core;
-using AutoMapper.QueryableExtensions;
 using Persistence;
 
 namespace Application.Activities.Queries;
