@@ -2,7 +2,6 @@
 
 public class Activity
 {
-    // Activity props
     public string Id { get; set; } = Guid.NewGuid().ToString();
     public required string Title { get; set; }
     public DateTime Date { get; set; }
@@ -19,4 +18,5 @@ public class Activity
 
     // Navigation props
     public ICollection<ActivityAttendee> Attendees { get; set; } = [];
+    public ICollection<Comment> Comments { get; set; } = [];
 }

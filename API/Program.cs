@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using Domain;
 using API.Middleware;
+using API.SignalR;
 using Application.Core;
 using Application.Activities.Queries;
 using Application.Activities.Validators;
@@ -23,6 +24,7 @@ builder.Services.AddControllers(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 });
 builder.Services.AddCors();
+builder.Services.AddSignalR();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -68,6 +70,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapGroup("api").MapIdentityApi<User>();
+app.MapHub<CommentHub>("/comments");
 
 await MigrateDatabaseAsync(app);
 

@@ -75,3 +75,12 @@ type User = {
   displayName: string;
   imageUrl?: string;
 };
+
+type ChatComment = {
+  id: string;
+  body: string;
+  createdAt: Date;
+  userId: string;
+  displayName: string;
+  imageUrl?: string;
+};

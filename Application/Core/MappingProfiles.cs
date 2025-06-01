@@ -32,5 +32,13 @@ public class MappingProfiles : Profile
                 configExpression.MapFrom(activityAttendee => activityAttendee.User.Id));
 
         CreateMap<User, UserProfileDto>();
+
+        CreateMap<Comment, CommentDto>()
+            .ForMember(commentDto => commentDto.UserId, configExpression =>
+                configExpression.MapFrom(comment => comment.User.Id))
+            .ForMember(commentDto => commentDto.DisplayName, configExpression =>
+                configExpression.MapFrom(comment => comment.User.DisplayName))
+            .ForMember(commentDto => commentDto.ImageUrl, configExpression =>
+                configExpression.MapFrom(comment => comment.User.ImageUrl));
     }
 }
