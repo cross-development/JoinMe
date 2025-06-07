@@ -17,6 +17,8 @@ public class MappingProfiles : Profile
 
         CreateMap<EditActivityDto, Activity>();
 
+        CreateMap<Activity, UserActivityDto>();
+
         CreateMap<Activity, ActivityDto>()
             .ForMember(activityDto => activityDto.HostDisplayName, configExpression =>
                 configExpression.MapFrom(activity => activity.Attendees.FirstOrDefault(attendee =>

@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Activities.Commands;
 using Application.Activities.Queries;
 using Application.Activities.DTOs;
+using Application.Core;
 
 namespace API.Controllers;
 
 public class ActivitiesController : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<List<ActivityDto>>> GetActivities()
+    public async Task<ActionResult<PagedList<ActivityDto, DateTime?>>> GetActivities([FromQuery] ActivityParams activityParams)
     {
-        return await Mediator.Send(new GetActivityList.Query());
+        var result = await Mediator.Send(new GetActivityList.Query { Params = activityParams });
+
+        return HandleResult(result);
     }
 
     [HttpGet("{id}")]

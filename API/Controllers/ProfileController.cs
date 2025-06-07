@@ -72,4 +72,12 @@ public class ProfileController : BaseApiController
 
         return HandleResult(result);
     }
+
+    [HttpGet("{userId}/activities")]
+    public async Task<ActionResult<List<UserProfileDto>>> GetActivities(string userId, string filter)
+    {
+        var result = await Mediator.Send(new GetUserActivities.Query { UserId = userId, Filter = filter });
+
+        return HandleResult(result);
+    }
 }
