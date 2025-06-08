@@ -23,9 +23,9 @@ type Profile = {
   displayName: string;
   bio?: string;
   imageUrl?: string;
-  followersCount: number;
-  followingCount: number;
-  isFollowing: boolean;
+  followersCount?: number;
+  followingCount?: number;
+  isFollowing?: boolean;
 };
 
 type Photo = {
@@ -86,4 +86,9 @@ type ChatComment = {
   userId: string;
   displayName: string;
   imageUrl?: string;
+};
+
+type PagedList<T, TCursor> = {
+  items: T[];
+  nextCursor: TCursor;
 };

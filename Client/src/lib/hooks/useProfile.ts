@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { Dispatch, SetStateAction, useMemo, useState } from 'react';
 
 import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 
@@ -18,9 +18,15 @@ type UseProfileReturnType = {
   followings?: Profile[];
   isLoadingFollowing: boolean;
   updateFollowing: UseMutationResult<void, Error, void, unknown>;
+  filter: string | null;
+  setFilter: Dispatch<SetStateAction<string | null>>;
+  userActivities?: Activity[];
+  isLoadingUserActivities: boolean;
 };
 
 export const useProfile = (params: UseProfileParamsType = {}): UseProfileReturnType => {
+  const [filter, setFilter] = useState<string | null>(null);
+
   const queryClient = useQueryClient();
 
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
@@ -72,7 +78,7 @@ export const useProfile = (params: UseProfileParamsType = {}): UseProfileReturnT
       queryClient.invalidateQueries({ queryKey: ['followings', params.id, 'followers'] });
 
       queryClient.setQueryData<Profile>(['profile', params.id], profile => {
-        if (!profile) return profile;
+        if (!profile || profile.followersCount === undefined) return profile;
 
         return {
           ...profile,
@@ -81,6 +87,18 @@ export const useProfile = (params: UseProfileParamsType = {}): UseProfileReturnT
         };
       });
     },
+  });
+
+  const { data: userActivities, isLoading: isLoadingUserActivities } = useQuery({
+    queryKey: ['user-activities', filter],
+    queryFn: async () => {
+      const response = await agent.get<Activity[]>(`/profiles/${params.id}/activities`, {
+        params: { filter },
+      });
+
+      return response.data;
+    },
+    enabled: !!params.id && !!filter,
   });
 
   const isCurrentUser = useMemo(() => {
@@ -95,5 +113,9 @@ export const useProfile = (params: UseProfileParamsType = {}): UseProfileReturnT
     followings,
     isLoadingFollowing,
     updateFollowing,
+    filter,
+    setFilter,
+    userActivities,
+    isLoadingUserActivities,
   };
 };

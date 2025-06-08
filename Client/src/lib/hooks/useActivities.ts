@@ -1,7 +1,18 @@
 import { useLocation } from 'react-router';
-import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  FetchNextPageOptions,
+  InfiniteData,
+  InfiniteQueryObserverResult,
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  UseMutationResult,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 import agent from '@/lib/api/agent';
+import { useStore } from '@/lib/hooks/useStore';
 import { useAccount } from '@/lib/hooks/useAccount';
 
 type UseActivitiesParamsType = {
@@ -9,7 +20,12 @@ type UseActivitiesParamsType = {
 };
 
 type UseActivitiesReturnType = {
-  activities?: Activity[];
+  activitiesGroup?: InfiniteData<PagedList<Activity, string>, unknown>;
+  isFetchingNextPage: boolean;
+  hasNextPage: boolean;
+  fetchNextPage: (
+    options?: FetchNextPageOptions,
+  ) => Promise<InfiniteQueryObserverResult<InfiniteData<PagedList<Activity, string>, unknown>, Error>>;
   activity?: Activity;
   isLoadingActivity: boolean;
   isLoading: boolean;
@@ -26,21 +42,41 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
 
   const { currentUser } = useAccount();
 
-  const { data: activities, isLoading } = useQuery({
-    queryKey: ['activities'],
-    queryFn: async () => {
-      const response = await agent.get<Activity[]>('/activities');
+  const {
+    activityStore: { filter, startDate },
+  } = useStore();
+
+  const {
+    data: activitiesGroup,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery<PagedList<Activity, string>>({
+    queryKey: ['activities', filter, startDate],
+    queryFn: async ({ pageParam = null }) => {
+      const response = await agent.get<PagedList<Activity, string>>('/activities', {
+        params: { cursor: pageParam, pageSize: 3, filter, startDate },
+      });
 
       return response.data;
     },
-    select: data => {
-      return data.map(activity => ({
-        ...activity,
-        isHost: activity.hostId === currentUser?.id,
-        isGoing: activity.attendees.some(attendee => attendee.id === currentUser?.id),
-        hostImageUrl: activity.attendees.find(attendee => attendee.id === activity.hostId)?.imageUrl,
-      }));
-    },
+    select: data => ({
+      ...data,
+      pages: data.pages.map(page => ({
+        ...page,
+        items: page.items.map(activity => ({
+          ...activity,
+          isHost: activity.hostId === currentUser?.id,
+          isGoing: activity.attendees.some(attendee => attendee.id === currentUser?.id),
+          hostImageUrl: activity.attendees.find(attendee => attendee.id === activity.hostId)?.imageUrl,
+        })),
+      })),
+    }),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    initialPageParam: null,
+    placeholderData: keepPreviousData,
+    getNextPageParam: lastPage => lastPage.nextCursor,
     enabled: !params?.id && location.pathname === '/activities' && !!currentUser,
   });
 
@@ -130,7 +166,10 @@ export const useActivities = (params: UseActivitiesParamsType = {}): UseActiviti
   });
 
   return {
-    activities,
+    activitiesGroup,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
     activity,
     isLoadingActivity,
     isLoading,
